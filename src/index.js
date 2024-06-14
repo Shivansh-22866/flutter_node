@@ -19,6 +19,7 @@ mongoose.connect("mongodb+srv://shivanshp0418:ByIqDuGWTHPvSmlW@cluster0.d3ramr9.
     }
 );
 
-app.listen(2000, () => {
-    console.log('Server is running on port 2000');
+const PORT = process.env.PORT || 2000
+app.listen(PORT, () => {
+    console.log('Server is running on port '+ PORT);
 })
