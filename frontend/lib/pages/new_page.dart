@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AddPage extends StatefulWidget {
-  const AddPage({super.key});
+  final bool isUpdate;
+  final Note? note;
+  const AddPage({super.key, required this.isUpdate, this.note});
 
   @override
   State<AddPage> createState() => _AddPageState();
@@ -27,6 +29,22 @@ class _AddPageState extends State<AddPage> {
     Navigator.pop(context);
   }
 
+  void updateNote() {
+    widget.note!.title = titleController.text;
+    widget.note!.content = contentController.text;
+    Provider.of<NotesProvider>(context, listen: false).updateNote(widget.note!);
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isUpdate) {
+      titleController.text = widget.note!.title!;
+      contentController.text = widget.note!.content!;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +53,11 @@ class _AddPageState extends State<AddPage> {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
-              addNewNote();
+              if (widget.isUpdate) {
+                updateNote();
+              } else {
+                addNewNote();
+              }
             },
           )
         ],
@@ -47,7 +69,7 @@ class _AddPageState extends State<AddPage> {
           children: [
             TextField(
                 controller: titleController,
-                autofocus: true,
+                autofocus: (widget.isUpdate == true) ? false : true,
                 onSubmitted: (value) {
                   if (value != "") {
                     noteFocus.requestFocus();
